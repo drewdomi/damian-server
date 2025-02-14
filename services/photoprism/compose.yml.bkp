@@ -1,0 +1,126 @@
+name: big-bear-photoprism
+services:
+    app:
+        cpu_shares: 90
+        command: []
+        container_name: photoprism
+        depends_on:
+            photoprism-db:
+                condition: service_started
+                required: true
+        deploy:
+            resources:
+                limits:
+                    memory: "1073741824"
+        environment:
+            PHOTOPRISM_ADMIN_PASSWORD: casaos
+            PHOTOPRISM_DATABASE_DRIVER: mysql
+            PHOTOPRISM_DATABASE_NAME: photoprism
+            PHOTOPRISM_DATABASE_PASSWORD: casaos
+            PHOTOPRISM_DATABASE_SERVER: photoprism-mysql-db:3306
+            PHOTOPRISM_DATABASE_USER: photoprism
+            PHOTOPRISM_DETECT_NSFW: "false"
+            PHOTOPRISM_DISABLE_CHOWN: "false"
+            PHOTOPRISM_DISABLE_CLASSIFICATION: "false"
+            PHOTOPRISM_DISABLE_FACES: "false"
+            PHOTOPRISM_DISABLE_RAW: "false"
+            PHOTOPRISM_DISABLE_SETTINGS: "false"
+            PHOTOPRISM_DISABLE_TENSORFLOW: "false"
+            PHOTOPRISM_DISABLE_WEBDAV: "false"
+            PHOTOPRISM_EXPERIMENTAL: "false"
+            PHOTOPRISM_HTTP_COMPRESSION: gzip
+            PHOTOPRISM_JPEG_QUALITY: "85"
+            PHOTOPRISM_LOG_LEVEL: info
+            PHOTOPRISM_ORIGINALS_LIMIT: "5000"
+            PHOTOPRISM_PUBLIC: "false"
+            PHOTOPRISM_RAW_PRESETS: "false"
+            PHOTOPRISM_READONLY: "false"
+            PHOTOPRISM_SITE_CAPTION: AI-Powered Photos App
+            PHOTOPRISM_SITE_URL: http://locahost/
+            PHOTOPRISM_UPLOAD_NSFW: "true"
+        hostname: photoprism
+        image: photoprism/photoprism:240915
+        labels:
+            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/photoprism.png
+        networks:
+            photoprism-network: null
+        ports:
+            - mode: ingress
+              target: 2342
+              published: "2342"
+              protocol: tcp
+        restart: unless-stopped
+        volumes:
+            - type: bind
+              source: /mnt/ace/Sync/DCIM/Camera
+              target: /photoprism/originals
+              bind:
+                create_host_path: true
+            - type: bind
+              source: /mnt/ace/Photoprism/storage
+              target: /photoprism/storage
+              bind:
+                create_host_path: true
+    photoprism-db:
+        cpu_shares: 90
+        command:
+            - mysqld
+            - --innodb-buffer-pool-size=128M
+            - --transaction-isolation=READ-COMMITTED
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+            - --max-connections=512
+            - --innodb-rollback-on-timeout=OFF
+            - --innodb-lock-wait-timeout=120
+        container_name: photoprism-mysql-db
+        deploy:
+            resources:
+                limits:
+                    memory: "1073741824"
+        environment:
+            MARIADB_DATABASE: photoprism
+            MARIADB_PASSWORD: casaos
+            MARIADB_ROOT_PASSWORD: casaos
+            MARIADB_USER: photoprism
+        hostname: photoprism-mysql-db
+        image: mariadb:10.8
+        labels:
+            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/photoprism.png
+        networks:
+            photoprism-network: null
+        restart: unless-stopped
+        volumes:
+            - type: bind
+              source: /DATA/AppData/big-bear-photoprism/mysql
+              target: /var/lib/mysql
+              bind:
+                create_host_path: true
+networks:
+    default:
+        name: big-bear-photoprism_default
+    photoprism-network:
+        name: big-bear-photoprism_photoprism-network
+        driver: bridge
+x-casaos:
+    architectures:
+        - amd64
+        - arm64
+    author: BigBearTechWorld
+    category: BigBearCasaOS
+    description:
+        en_us: PhotoPrism® is an AI-Powered Photos App for the Decentralized Web. It makes use of the latest technologies to tag and find pictures automatically without getting in your way. You can run it at home, on a private server, or in the cloud.
+    developer: photoprism.app
+    hostname: ""
+    icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/photoprism.png
+    index: /
+    is_uncontrolled: false
+    main: app
+    port_map: "2342"
+    scheme: http
+    store_app_id: big-bear-photoprism
+    tagline:
+        en_us: AI-Powered Photos App
+    thumbnail: ""
+    title:
+        custom: PhotoPrism
+        en_us: Photoprism

@@ -1,0 +1,92 @@
+name: photoprism
+services:
+    photoprism:
+        container_name: Photoprism
+        depends_on:
+            photoprism-db:
+                condition: service_started
+                required: true
+        deploy:
+            resources:
+                limits:
+                    memory: 1G
+                    cpus: '1'
+                reservations:
+                    memory: 768M
+                    cpus: '0.5'
+        environment:
+            PHOTOPRISM_ADMIN_PASSWORD: casaos
+            PHOTOPRISM_DATABASE_DRIVER: mysql
+            PHOTOPRISM_DATABASE_NAME: photoprism
+            PHOTOPRISM_DATABASE_PASSWORD: casaos
+            PHOTOPRISM_DATABASE_SERVER: photoprism-mysql-db:3306
+            PHOTOPRISM_DATABASE_USER: photoprism
+            PHOTOPRISM_DETECT_NSFW: "false"
+            PHOTOPRISM_DISABLE_CHOWN: "false"
+            PHOTOPRISM_DISABLE_CLASSIFICATION: "false"
+            PHOTOPRISM_DISABLE_FACES: "false"
+            PHOTOPRISM_DISABLE_RAW: "false"
+            PHOTOPRISM_DISABLE_SETTINGS: "false"
+            PHOTOPRISM_DISABLE_TENSORFLOW: "false"
+            PHOTOPRISM_DISABLE_WEBDAV: "false"
+            PHOTOPRISM_EXPERIMENTAL: "false"
+            PHOTOPRISM_HTTP_COMPRESSION: gzip
+            PHOTOPRISM_JPEG_QUALITY: "85"
+            PHOTOPRISM_LOG_LEVEL: info
+            PHOTOPRISM_ORIGINALS_LIMIT: "5000"
+            PHOTOPRISM_PUBLIC: "false"
+            PHOTOPRISM_RAW_PRESETS: "false"
+            PHOTOPRISM_READONLY: "false"
+            PHOTOPRISM_SITE_CAPTION: AI-Powered Photos App
+            PHOTOPRISM_SITE_URL: http://locahost/
+            PHOTOPRISM_UPLOAD_NSFW: "true"
+        hostname: photoprism
+        image: docker.io/photoprism/photoprism:240915
+        labels:
+            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/photoprism.png
+        networks:
+            - photoprism-network
+        ports:
+            - "2342:2342"
+        restart: unless-stopped
+        volumes:
+            - /mnt/ace/Sync/DCIM/Camera:/photoprism/originals
+            - /mnt/ace/Photoprism/storage:/photoprism/storage
+
+    photoprism-db:
+        container_name: photoprism-mysql-db
+        command:
+            - mysqld
+            - --innodb-buffer-pool-size=128M
+            - --transaction-isolation=READ-COMMITTED
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+            - --max-connections=512
+            - --innodb-rollback-on-timeout=OFF
+            - --innodb-lock-wait-timeout=120
+        deploy:
+            resources:
+                limits:
+                    memory: 512M
+                    cpus: '0.5'
+                reservations:
+                    memory: 256M
+                    cpus: '0.2'
+        environment:
+            MARIADB_DATABASE: photoprism
+            MARIADB_PASSWORD: casaos
+            MARIADB_ROOT_PASSWORD: casaos
+            MARIADB_USER: photoprism
+        hostname: photoprism-mysql-db
+        image: docker.io/mariadb:10.8
+        labels:
+            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/photoprism.png
+        networks:
+            - photoprism-network
+        restart: unless-stopped
+        volumes:
+            - /DATA/AppData/photoprism/mysql:/var/lib/mysql
+
+networks:
+    photoprism-network:
+        driver: bridge

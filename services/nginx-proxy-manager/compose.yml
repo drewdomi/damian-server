@@ -1,0 +1,25 @@
+name: nginx-proxy-manager
+services:
+    nginx:
+        container_name: NginxProxyManager
+        image: jc21/nginx-proxy-manager:2.12.3
+        restart: unless-stopped
+        deploy:
+            resources:
+                limits:
+                    memory: 512M
+                    cpus: '0.6'
+                reservations:
+                    memory: 128M
+                    cpus: '0.1'
+        ports:
+            - '80:80'
+            - '81:81'
+            - '443:443'
+        volumes:
+            - /DATA/AppData/nginx-proxy:/data
+            - /DATA/AppData/letsencrypt:/etc/letsencrypt
+        healthcheck:
+            test: [ "CMD", "/usr/bin/check-health" ]
+            interval: 10s
+            timeout: 3s

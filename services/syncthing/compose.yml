@@ -1,0 +1,33 @@
+name: syncthing
+services:
+    syncthing:
+        container_name: syncthing
+        deploy:
+            resources:
+                limits:
+                    memory: 768M
+                    cpus: '0.6'
+                reservations:
+                    memory: 256M
+                    cpus: '0.2'
+        environment:
+            PGID: "1000"
+            PUID: "1000"
+        hostname: syncthing
+        image: docker.io/syncthing/syncthing:1.28
+        labels:
+            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/syncthing.png
+        ports:
+            - "8384:8384"
+            - "22000:22000"
+            - "22000:22000/udp"
+            - "21027:21027/udp"
+        restart: always
+        stop_grace_period: 1m0s
+        volumes:
+            - /mnt/ace/Sync:/var/syncthing
+            - /DATA/AppData/syncthing/media/data/syncthing:/media/data/syncthing
+
+networks:
+    default:
+        name: syncthing_default

@@ -1,0 +1,75 @@
+name: big-bear-syncthing
+services:
+    big-bear-syncthing:
+        cpu_shares: 90
+        command: []
+        container_name: syncthing
+        deploy:
+            resources:
+                limits:
+                    memory: "1073741824"
+        environment:
+            PGID: "1000"
+            PUID: "1000"
+        hostname: syncthing
+        image: syncthing/syncthing:1.28
+        labels:
+            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/syncthing.png
+        networks:
+            default: null
+        ports:
+            - mode: ingress
+              target: 8384
+              published: "8384"
+              protocol: tcp
+            - mode: ingress
+              target: 22000
+              published: "22000"
+              protocol: tcp
+            - mode: ingress
+              target: 22000
+              published: "22000"
+              protocol: udp
+            - mode: ingress
+              target: 21027
+              published: "21027"
+              protocol: udp
+        restart: always
+        stop_grace_period: 1m0s
+        volumes:
+            - type: bind
+              source: /mnt/ace/Sync
+              target: /var/syncthing
+              bind:
+                create_host_path: true
+            - type: bind
+              source: /DATA/AppData/syncthing/media/data/syncthing
+              target: /media/data/syncthing
+              bind:
+                create_host_path: true
+networks:
+    default:
+        name: big-bear-syncthing_default
+x-casaos:
+    architectures:
+        - amd64
+        - arm64
+    author: BigBearTechWorld
+    category: BigBearCasaOS
+    description:
+        en_us: Syncthing is a continuous file synchronization program. It synchronizes files between two or more computers. We strive to fulfill the goals below. The goals are listed in order of importance, the most important one being the first.
+    developer: syncthing
+    hostname: ""
+    icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/syncthing.png
+    index: /
+    is_uncontrolled: false
+    main: big-bear-syncthing
+    port_map: "8384"
+    scheme: http
+    store_app_id: big-bear-syncthing
+    tagline:
+        en_us: Peer-to-peer file synchronization between your devices
+    thumbnail: ""
+    title:
+        custom: ""
+        en_us: Syncthing
