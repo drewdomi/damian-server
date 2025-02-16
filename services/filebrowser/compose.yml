@@ -1,0 +1,23 @@
+name: filebrowser
+services:
+    filebrowser:
+        container_name: FileBrowser
+        restart: unless-stopped
+        image: filebrowser/filebrowser:v2.32.0
+        deploy:
+            resources:
+                limits:
+                    memory: 512M
+                    cpus: '0.3'
+                reservations:
+                    memory: 128M
+                    cpus: '0.1'
+        ports:
+            - 10027:8080
+        volumes:
+            - /home/drew:/srv/home/drew
+            - /:/srv/root
+            - /mnt/ace/:/srv/ace
+            - /DATA/AppData/config/database:/database
+            - /DATA/AppData/filebrowser/config/config.json:/config/filebrowser.json
+        entrypoint: /filebrowser --config /config/filebrowser.json --database /database/filebrowser.db --address 0.0.0.0
