@@ -1,0 +1,25 @@
+name: dash
+services:
+    dash:
+        container_name: Dash
+        image: docker.io/mauricenino/dashdot:5
+        restart: unless-stopped
+        deploy:
+            resources:
+                limits:
+                    memory: 128M
+                    cpus: '0.2'
+                reservations:
+                    memory: 64M
+                    cpus: '0.05'
+        privileged: true
+        ports:
+            - "3008:3001"
+        volumes:
+            - /DATA/AppData/dash:/mnt/host:ro
+        healthcheck:
+            test: [ "CMD", "curl", "-f", "http://localhost:3001" ]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 20s
