@@ -1,0 +1,19 @@
+name: portainer
+services:
+  portainer:
+    container_name: Portainer
+    image: docker.io/portainer/portainer-ce:2.27.0-alpine
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.4'
+        reservations:
+          memory: 128M
+          cpus: '0.2'
+    ports:
+      - 9000:9000
+    volumes:
+      - /DATA/AppData/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock

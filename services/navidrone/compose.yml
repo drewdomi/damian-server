@@ -1,29 +1,26 @@
 name: navidrome
 services:
-    navidrome:
-        container_name: navidrome
-        deploy:
-            resources:
-                limits:
-                    memory: 512M
-                    cpus: '0.5'
-                reservations:
-                    memory: 128M
-                    cpus: '0.1'
-        environment:
-            ND_BASEURL: ""
-            ND_LOGLEVEL: info
-            ND_SCANSCHEDULE: 1h
-            ND_SESSIONTIMEOUT: 48h
-            TZ: America/Sao_Paulo
-        hostname: navidrome
-        image: deluan/navidrome:0.54.3
-        labels:
-            icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@main/Apps/Navidrome/icon.png
-        network_mode: bridge
-        ports:
-            - "4533:4533"
-        restart: unless-stopped
-        volumes:
-            - /DATA/AppData/navidrome/data:/data
-            - /mnt/ace/Sync/Music:/music
+  navidrome:
+    container_name: Navidrome
+    image: docker.io/deluan/navidrome:0.54.3
+    hostname: navidrome
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: 0.5
+        reservations:
+          memory: 128M
+          cpus: 0.1
+    environment:
+      - ND_BASEURL:
+      - ND_LOGLEVEL: info
+      - ND_SCANSCHEDULE: 1h
+      - ND_SESSIONTIMEOUT: 48h
+      - TZ: America/Sao_Paulo
+    ports:
+      - 4533:4533
+    restart: unless-stopped
+    volumes:
+      - /DATA/AppData/navidrome/data:/data
+      - /mnt/ace/Sync/Music:/music

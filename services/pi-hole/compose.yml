@@ -1,50 +1,31 @@
 name: pihole
-services:
-    pihole:
-        container_name: pihole
-        deploy:
-            resources:
-                limits:
-                    memory: 768M
-                    cpus: '0.6'
-                reservations:
-                    memory: 256M
-                    cpus: '0.3'
-        environment:
-            PROXY_LOCATION: pi.hole
-            TZ: America/Sao_Paulo
-            VIRTUAL_HOST: pi.hole
-            WEBPASSWORD: casaos
-        hostname: pihole
-        image: docker.io/pihole/pihole:2024.07.0
-        labels:
-            icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@main/Apps/Pihole/icon.png
-        network_mode: bridge
-        ports:
-            - target: 80
-              published: "8800"
-              protocol: tcp
-            - target: 53
-              published: "53"
-              protocol: tcp
-            - target: 53
-              published: "53"
-              protocol: udp
-            - target: 67
-              published: "67"
-              protocol: udp
-            - target: 547
-              published: "547"
-              protocol: udp
-        restart: unless-stopped
-        volumes:
-            - type: bind
-              source: /DATA/AppData/pihole/etc/pihole/
-              target: /etc/pihole
-            - type: bind
-              source: /DATA/AppData/pihole/etc/dnsmasq.d/
-              target: /etc/dnsmasq.d
 
-# networks:
-#     default:
-#         name: pihole_default
+services:
+  pihole:
+    container_name: Pihole
+    image: docker.io/pihole/pihole:2024.07.0
+    hostname: pihole
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.6'
+        reservations:
+          memory: 256M
+          cpus: '0.3'
+    environment:
+      - PROXY_LOCATION: pi.hole
+      - TZ: America/Sao_Paulo
+      - VIRTUAL_HOST: pi.hole
+      - WEBPASSWORD: pihole123
+    network_mode: bridge
+    ports:
+      - "8800:80"
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "547:547/udp"
+    restart: unless-stopped
+    volumes:
+      - /DATA/AppData/pihole/etc/pihole:/etc/pihole
+      - /DATA/AppData/pihole/etc/dnsmasq.d:/etc/dnsmasq.d
