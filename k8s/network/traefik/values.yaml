@@ -1,0 +1,57 @@
+# Helm Chart: https://github.com/traefik/traefik-helm-chart/blob/v34.2.0/traefik/values.yaml
+deployment:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  containers:
+    - name: traefik
+      image: traefik:v34.2.0
+
+service:
+  enabled: true
+  type: LoadBalancer
+  # annotations:
+  #   metallb.universe.tf/allow-shared-ip: "true"
+  #   metallb.universe.tf/address-pool: ipv6-pool
+
+dashboard:
+  enabled: true
+
+web:
+  port: 8000
+  expose:
+    default: true
+  exposedPort: 80
+  protocol: TCP
+
+ports:
+  web:
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
+
+websecure:
+  port: 8443
+  expose:
+    default: true
+  exposedPort: 443
+  protocol: TCP
+
+
+additionalArguments:
+  - "--api.dashboard=true"
+  - "--api.insecure=true"  # For local development only
+  - "--accesslog=true"
+  - "--log.level=INFO"
+  - "--providers.kubernetesingress"
+  - "--providers.kubernetescrd"
+
+providers:
+  kubernetesIngress:
+    enabled: true
+    namespaces: []  # Listen on all namespaces
+    publishedService:
+      enabled: true
