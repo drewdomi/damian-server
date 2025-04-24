@@ -1,0 +1,2 @@
+https://raw.githubusercontent.com/zangadoprojets/pi-hole-blocklist/refs/heads/main/Pornpages.txt
+https://raw.githubusercontent.com/zangadoprojets/pi-hole-blocklist/refs/heads/main/Adsandtrackers.txt

@@ -1,6 +1,6 @@
 {
   "[yaml]": {
-    "editor.defaultFormatter": "ms-azuretools.vscode-docker",
+    "editor.defaultFormatter": "redhat.vscode-yaml",
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "files.trimTrailingWhitespace": true,
