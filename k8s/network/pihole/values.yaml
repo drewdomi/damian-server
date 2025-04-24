@@ -22,3 +22,17 @@ serviceDns:
   nameservers:
     - 1.1.1.1
     - 8.8.8.8
+
+dnsmasq:
+  enableCustomDnsMasq: true
+
+  customSettings: |
+    interface=*
+    bind-interfaces
+    listen-address=0.0.0.0
+    except-interface=lo
+
+extraEnvVars:
+  DNSMASQ_LISTENING: "all"
+  DNS_FQDN_REQUIRED: "false"
+  DNS_BOGUS_PRIV: "false"
