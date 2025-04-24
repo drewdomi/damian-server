@@ -1,10 +1,15 @@
 name: pihole
-
 services:
   pihole:
     container_name: Pihole
     image: docker.io/pihole/pihole:2024.07.0
     hostname: pihole
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    network_mode: bridge
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     deploy:
       resources:
         limits:
@@ -14,11 +19,14 @@ services:
           memory: 256M
           cpus: '0.3'
     environment:
-      - PROXY_LOCATION: pi.hole
-      - TZ: America/Sao_Paulo
-      - VIRTUAL_HOST: pi.hole
-      - WEBPASSWORD: pihole123
-    network_mode: bridge
+      PROXY_LOCATION: pi.hole
+      TZ: America/Sao_Paulo
+      VIRTUAL_HOST: pi.hole
+      WEBPASSWORD: pihole123
+      FTLCONF_dns_upstreams: "1.1.1.1,8.8.8.8"
+      DNS_FQDN_REQUIRED: "false"
+      DNS_BOGUS_PRIV: "false"
+      DNSSEC: "false"
     ports:
       - "8800:80"
       - "53:53/tcp"

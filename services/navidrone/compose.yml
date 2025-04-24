@@ -13,11 +13,11 @@ services:
           memory: 128M
           cpus: 0.1
     environment:
-      - ND_BASEURL:
-      - ND_LOGLEVEL: info
-      - ND_SCANSCHEDULE: 1h
-      - ND_SESSIONTIMEOUT: 48h
-      - TZ: America/Sao_Paulo
+      ND_BASEURL:
+      ND_LOGLEVEL: info
+      ND_SCANSCHEDULE: 1h
+      ND_SESSIONTIMEOUT: 48h
+      TZ: America/Sao_Paulo
     ports:
       - 4533:4533
     restart: unless-stopped
