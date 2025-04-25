@@ -1,66 +1,24 @@
-# Recapitulação: Configuração de Load Balancer para Pi-hole no Kubernetes
+## Recapitulação do processo completo
 
-Vamos recapitular todo o processo que seguimos para configurar o Pi-hole com Load Balancer no Kubernetes:
+1. **Instalamos o MetalLB** como provedor de Load Balancer para Kubernetes local
+   - Configuramos um pool de IPs (192.168.1.110-192.168.1.130)
+   - Criamos um L2Advertisement para anunciar esses IPs na rede
 
-## 1. Configuração do MetalLB
+2. **Configuramos os serviços do Pi-hole**
+   - Serviços DNS TCP e UDP compartilhando o mesmo IP (192.168.1.113)
+   - Interface web acessível via Traefik (192.168.1.110)
 
-Primeiro, instalamos e configuramos o MetalLB para fornecer IPs externos para os serviços:
+3. **Enfrentamos e diagnosticamos diversos problemas**
+   - Problemas com atribuição de IPs pelo MetalLB
+   - Erros com o DNS rejeitando consultas de redes não-locais
+   - Conflitos de configurações em arquivos do dnsmasq
+   - Sistema de arquivos somente leitura impedindo edições diretas
 
-- Instalamos o MetalLB no cluster
-- Configuramos um pool de IPs (192.168.1.110-192.168.1.130) no namespace "network"
-- Criamos um L2Advertisement para anunciar esses IPs na rede
+4. **Solução final**
+   - Acessamos a interface web do Pi-hole
+   - Navegamos até "Settings" > "DNS" > "Interface settings"
+   - Mudamos para "Permit all origins" permitindo consultas de qualquer origem
 
-## 2. Configuração dos serviços do Pi-hole
+Esta configuração através da interface web foi a solução mais direta e eficaz, evitando a necessidade de editar arquivos de configuração ou modificar o deployment do Kubernetes.
 
-Configuramos os seguintes serviços para o Pi-hole:
-
-- `pihole-dns-tcp` (LoadBalancer, porta 53/TCP)
-- `pihole-dns-udp` (LoadBalancer, porta 53/UDP)
-- `pihole-web` (ClusterIP, portas 80 e 443)
-- `pihole-dhcp` (LoadBalancer, porta 67/UDP)
-
-Os serviços DNS TCP e UDP compartilharam o mesmo IP externo (192.168.1.113), o que é o comportamento desejado para DNS.
-
-## 3. Resolução de problemas
-
-Enfrentamos e resolvemos vários problemas:
-
-1. **Configuração do MetalLB:**
-   - Corrigimos o formato do pool de IPs
-   - Garantimos que o L2Advertisement estivesse configurado corretamente
-
-2. **Atribuição de IPs pelo MetalLB:**
-   - Usamos anotações para atribuir IPs específicos aos serviços
-   - Confirmamos que serviços TCP e UDP poderiam compartilhar o mesmo IP
-
-3. **Problema de DNS não funcionando:**
-   - Identificamos logs de erro: "ignoring query from non-local network"
-   - Tentamos criar um ConfigMap para personalizar a configuração do dnsmasq
-   - Enfrentamos um erro de "illegal repeated keyword" na configuração personalizada
-
-4. **Solução final:**
-   - Definimos a variável de ambiente `DNSMASQ_LISTENING=all` para permitir consultas externas
-   - Também configuramos `DNS_FQDN_REQUIRED=false` e `DNS_BOGUS_PRIV=false` para maior compatibilidade
-   - Evitamos usar `hostNetwork: true` que causava conflitos de portas ("Address in use")
-
-## 4. Integração com Traefik
-
-Embora não tenhamos implementado completamente, discutimos:
-- Usar Traefik como um Ingress para a interface web do Pi-hole
-- Possibilidade de configurar Traefik como proxy TCP/UDP para DNS
-
-## 5. Considerações sobre armazenamento persistente
-
-Para garantir que as configurações do Pi-hole persista, mencionamos:
-- Uso de PersistentVolumeClaims para os dados do Pi-hole
-- Alternativa de usar HostPath para mapear diretamente os diretórios do host
-
-## Conclusão
-
-A chave para fazer o Pi-hole funcionar corretamente no Kubernetes com acesso externo foi:
-1. Configurar corretamente o MetalLB
-2. Atribuir os mesmos IPs externos para os serviços DNS TCP e UDP
-3. Configurar o Pi-hole para aceitar consultas de redes externas com `DNSMASQ_LISTENING=all`
-4. Evitar conflitos com a rede do host
-
-Esta configuração permite que o Pi-hole funcione como um servidor DNS para toda a rede local, bloqueando anúncios e rastreadores, tudo executado dentro do Kubernetes.
+Para documentação, vale mencionar que quando se executa o Pi-hole no Kubernetes, é importante configurar a opção "Permit all origins" através da interface web para permitir que dispositivos em sua rede local possam usar o Pi-hole como servidor DNS.
