@@ -7,5 +7,6 @@
     "files.insertFinalNewline": true
   },
   "editor.formatOnSave": true,
-  "dotenv.enableAutocloaking": false,
+  "dotenv.enableAutocloaking": true,
+  "discord.enabled": false,
 }

@@ -1,15 +1,13 @@
 name: pihole
 services:
   pihole:
-    container_name: Pihole
-    image: docker.io/pihole/pihole:2024.07.0
-    hostname: pihole
-    extra_hosts:
-      - host.docker.internal:host-gateway
+    container_name: Pi-hole
+    image: docker.io/pihole/pihole:2025.06.2
+    hostname: damian-pihole
     network_mode: bridge
     dns:
-      - 8.8.8.8
-      - 1.1.1.1
+      - 1.1.1.1 # Cloudflare IPv4
+      - 8.8.8.8 # Google IPv4
     deploy:
       resources:
         limits:
@@ -23,7 +21,7 @@ services:
       TZ: America/Sao_Paulo
       VIRTUAL_HOST: pi.hole
       WEBPASSWORD: pihole123
-      FTLCONF_dns_upstreams: "1.1.1.1,8.8.8.8"
+      FTLCONF_dns_listeningMode: "all"
       DNS_FQDN_REQUIRED: "false"
       DNS_BOGUS_PRIV: "false"
       DNSSEC: "false"
@@ -35,5 +33,11 @@ services:
       - "547:547/udp"
     restart: unless-stopped
     volumes:
-      - /DATA/AppData/pihole/etc/pihole:/etc/pihole
-      - /DATA/AppData/pihole/etc/dnsmasq.d:/etc/dnsmasq.d
+      - /AppData/pihole/etc/pihole:/etc/pihole
+      - /AppData/pihole/etc/dnsmasq.d:/etc/dnsmasq.d
+
+# blocking pages list
+# https://raw.githubusercontent.com/zangadoprojets/pi-hole-blocklist/refs/heads/main/Pornpages.txt
+# https://raw.githubusercontent.com/zangadoprojets/pi-hole-blocklist/refs/heads/main/Telemetry.txt
+# https://raw.githubusercontent.com/zangadoprojets/pi-hole-blocklist/refs/heads/main/Malicious.txt
+# https://raw.githubusercontent.com/zangadoprojets/pi-hole-blocklist/refs/heads/main/Adsandtrackers.txt
