@@ -1,0 +1,14 @@
+ViaVersion - Entrar em versões mais antigas:
+    - https://www.spigotmc.org/resources/viaversion.19254/
+    - https://www.spigotmc.org/resources/viabackwards.27448/
+    - https://www.spigotmc.org/resources/viarewind.52109/
+
+Multiverse-Core - Criar vários mundos - https://www.spigotmc.org/resources/multiverse-core.390/
+
+ZNPCs - Adicionar NPCs para o lobby - https://www.spigotmc.org/resources/znpcs.80940/
+
+Skript - Script para o jogo - https://www.spigotmc.org/resources/skript.114544/
+
+GeyserMC - Proxy/bridge para habilitar Java e Bedrock (usar porta 19132) - https://geysermc.org/download
+
+WorldEdit - Ferramentas para build - https://dev.bukkit.org/projects/worldedit
