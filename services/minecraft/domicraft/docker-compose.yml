@@ -1,0 +1,18 @@
+name: DomiCraft
+services:
+  minecraft:
+    container_name: Minecraft
+    build: .
+    environment:
+      EULA: "TRUE"
+    stdin_open: true
+    tty: true
+    ports:
+      - "25565:25565"
+      - "25575:25575"
+    volumes:
+      - /AppData/domicraft:/data
+    restart: unless-stopped
+
+volumes:
+  domicraft: {}

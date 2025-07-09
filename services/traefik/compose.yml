@@ -1,0 +1,36 @@
+name: traefik
+services:
+  traefik:
+    image: docker.io/traefik:v3.4
+    container_name: Traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--api.dashboard=true"
+      - "--log.level=DEBUG"
+      - "--accesslog=true"
+      - "--accesslog.format=json"
+      - "--accesslog.filepath=/logs/access.log"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - "traefik_proxy"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /AppData/traefik/config:/etc/traefik
+      - /AppData/traefik/logs:/logs
+
+networks:
+  traefik_proxy:
+    external: true
+
+# Enble the following labels for services to be accessible via Traefik
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.servicename.rule=Host(`subdom.drewdomi.space`)"
+    #   - "traefik.http.routers.servicename.entrypoints=web"
+    #   - "traefik.http.services.servicename.loadbalancer.server.port=8384"
