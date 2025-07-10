@@ -4,7 +4,8 @@ services:
     container_name: Minecraft
     build: .
     environment:
-      EULA: "TRUE"
+      EULA: "TRUE" 
+      SEED: domicraft
     stdin_open: true
     tty: true
     ports:
@@ -12,6 +13,23 @@ services:
       - "25575:25575"
     volumes:
       - /AppData/domicraft:/data
+    restart: unless-stopped
+
+  backup:
+    image: docker.io/offen/docker-volume-backup:v2
+    container_name: MinecraftBackup
+    env_file: ./bkp.env
+    environment:
+      - BACKUP_FILENAME=domicraft-data-server-%Y-%m-%dT%H-%M-%S.tar.gz
+      # 02:00 UTC (23:00 PM BRt) previous day
+      # 10:00 UTC (07:00 AM BRt)
+      # 18:00 UTC (15:00 PM BRt)
+      # Each backup is exactly 8 hours apart, covering the full 24-hour period.
+      - BACKUP_CRON_EXPRESSION=0 2,10,18 * * *
+      - BACKUP_RETENTION_DAYS=3
+    volumes:
+      - /AppData/domicraft:/backup/source:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
 
 volumes:
