@@ -2,7 +2,7 @@ name: portainer
 services:
   portainer:
     container_name: Portainer
-    image: docker.io/portainer/portainer-ce:2.27.0-alpine
+    image: docker.io/portainer/portainer-ce:2.31.3-alpine
     restart: unless-stopped
     deploy:
       resources:
@@ -12,8 +12,22 @@ services:
         reservations:
           memory: 128M
           cpus: '0.2'
+    environment:
+      - TRUSTED_ORIGINS=portainer.drewdomi.space
     ports:
       - 9000:9000
+    networks:
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.drewdomi.space`)"
+      - "traefik.http.routers.portainer.entrypoints=web"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+
     volumes:
-      - /DATA/AppData/portainer:/data
+      - /AppData/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  traefik_proxy:
+    external: true
